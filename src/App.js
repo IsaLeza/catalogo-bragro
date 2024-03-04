@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import HTMLFlipBook from "react-pageflip";
 import { Document, Page, pdfjs } from 'react-pdf';
 import 'react-pdf/dist/Page/AnnotationLayer.css';
-import pdf from './cat-br.pdf';
+import pdf from './cat-br-compressed.pdf';
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
