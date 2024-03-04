@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import HTMLFlipBook from "react-pageflip";
 import { Document, Page, pdfjs } from 'react-pdf';
 import 'react-pdf/dist/Page/AnnotationLayer.css';
@@ -17,11 +17,24 @@ const Pages = React.forwardRef((props, ref) => {
 
 function App() {
   const [numPages, setNumPages] = useState(null);
+  const [pdfLoaded, setPdfLoaded] = useState(false);
 
   const onDocumentLoadSuccess = ({ numPages }) => {
     setNumPages(numPages);
-    // setLoading(false); // Uncomment this line if you want to use setLoading
   };
+
+  useEffect(() => {
+    const loadPdf = async () => {
+      try {
+        await pdfjs.getDocument(pdf).promise;
+        setPdfLoaded(true);
+      } catch (error) {
+        console.error('Error loading PDF:', error);
+      }
+    };
+
+    loadPdf();
+  }, []);
 
   return (
     <>
@@ -30,17 +43,19 @@ function App() {
         <div className="text-4xl font-bold md:font-extrabold text-white" style={{ margin: "1.5rem" }}>
           Catálogo BR Agro
         </div>
-        <HTMLFlipBook width={350} height={500} showCover={true}>
-          {[...Array(numPages).keys()].map((n) => (
-            <div key={n}>
-              <Pages number={`${n + 1}`}>
-                <Document file={pdf} onLoadSuccess={onDocumentLoadSuccess}>
-                  <Page pageNumber={n + 1} renderAnnotationLayer={false} renderTextLayer={false} width={350} className='border-3 border-black' />
-                </Document>
-              </Pages>
-            </div>
-          ))}
-        </HTMLFlipBook>
+        {pdfLoaded && (
+          <HTMLFlipBook width={350} height={500} showCover={true}>
+            {[...Array(numPages).keys()].map((n) => (
+              <div key={n}>
+                <Pages number={`${n + 1}`}>
+                  <Document file={pdf} onLoadSuccess={onDocumentLoadSuccess}>
+                    <Page pageNumber={n + 1} renderAnnotationLayer={false} renderTextLayer={false} width={350} className='border-3 border-black' />
+                  </Document>
+                </Pages>
+              </div>
+            ))}
+          </HTMLFlipBook>
+        )}
       </div>
       {/* Additional content can be added here */}
     </>
