@@ -15,9 +15,10 @@ const Pages = React.forwardRef((props, ref) => {
   );
 });
 
-function App() {
+function App(props) {
   const [numPages, setNumPages] = useState(null);
   const [pdfLoaded, setPdfLoaded] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
 
   const onDocumentLoadSuccess = ({ numPages }) => {
     setNumPages(numPages);
@@ -36,28 +37,40 @@ function App() {
     loadPdf();
   }, []);
 
+  const onPageTurn = (e) => {
+    setCurrentPage(e.data);
+  };
+
   return (
     <>
-      {/* {loading && <Loading loading={loading} />} */}
       <div className="bg-gray-900 h-screen flex flex-col justify-end items-center md:justify-center scroll-mx-2 overflow-hidden">
         <div className="text-4xl font-bold md:font-extrabold text-white" style={{ margin: "1.5rem" }}>
           Catálogo BR Agro
         </div>
         {pdfLoaded && (
-          <HTMLFlipBook width={350} height={500} showCover={true}>
+          <HTMLFlipBook
+            width={350}
+            height={500}
+            showCover={true}
+            onFlip={onPageTurn}
+            flippingTime={300}
+            onChangeOrientation={() => setCurrentPage(1)}
+            className="custom-book"
+          >
             {[...Array(numPages).keys()].map((n) => (
               <div key={n}>
                 <Pages number={`${n + 1}`}>
-                  <Document file={pdf} onLoadSuccess={onDocumentLoadSuccess}>
-                    <Page pageNumber={n + 1} renderAnnotationLayer={false} renderTextLayer={false} width={350} className='border-3 border-black' />
-                  </Document>
+                  {currentPage === n + 1 && (
+                    <Document file={pdf} onLoadSuccess={onDocumentLoadSuccess}>
+                      <Page pageNumber={n + 1} renderAnnotationLayer={false} renderTextLayer={false} width={350} className='border-3 border-black' />
+                    </Document>
+                  )}
                 </Pages>
               </div>
             ))}
           </HTMLFlipBook>
         )}
       </div>
-      {/* Additional content can be added here */}
     </>
   );
 }
