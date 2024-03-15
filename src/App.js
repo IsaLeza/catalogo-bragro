@@ -19,6 +19,7 @@ function App(props) {
   const [numPages, setNumPages] = useState(null);
   const [pdfLoaded, setPdfLoaded] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
+  const [preloadedPages, setPreloadedPages] = useState(5); // Number of pages to preload
 
   const onDocumentLoadSuccess = ({ numPages }) => {
     setNumPages(numPages);
@@ -37,12 +38,17 @@ function App(props) {
     loadPdf();
   }, []);
 
-  const onPageTurn = (e) => {
+  const onPageClick = (e) => {
     setCurrentPage(e.data);
   };
 
+  const preloadNextPages = () => {
+    const nextPageToLoad = Math.min(currentPage + preloadedPages, numPages);
+    setPreloadedPages(nextPageToLoad);
+  };
+
   return (
-    <>
+    <div className='background'>
       <div className="bg-gray-900 h-screen flex flex-col justify-end items-center md:justify-center scroll-mx-2 overflow-hidden">
         <div className="text-4xl font-bold md:font-extrabold text-white" style={{ margin: "1.5rem" }}>
           Catálogo BR Agro
@@ -52,26 +58,25 @@ function App(props) {
             width={350}
             height={500}
             showCover={true}
-            onFlip={onPageTurn}
+            onPageClick={onPageClick}
+            onFlip={() => preloadNextPages()}
             flippingTime={300}
             onChangeOrientation={() => setCurrentPage(1)}
             className="custom-book"
           >
-            {[...Array(numPages).keys()].map((n) => (
+            {[...Array(preloadedPages).keys()].map((n) => (
               <div key={n}>
-                <Pages number={`${n + 1}`}>
-                  {currentPage === n + 1 && (
-                    <Document file={pdf} onLoadSuccess={onDocumentLoadSuccess}>
-                      <Page pageNumber={n + 1} renderAnnotationLayer={false} renderTextLayer={false} width={350} className='border-3 border-black' />
-                    </Document>
-                  )}
+                <Pages number={`${currentPage + n}`}>
+                  <Document file={pdf} onLoadSuccess={onDocumentLoadSuccess}>
+                    <Page pageNumber={currentPage + n} renderAnnotationLayer={false} renderTextLayer={false} width={350} className='border-3 border-black' />
+                  </Document>
                 </Pages>
               </div>
             ))}
           </HTMLFlipBook>
         )}
       </div>
-    </>
+    </div>
   );
 }
 
