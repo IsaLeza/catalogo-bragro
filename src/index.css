@@ -6,9 +6,22 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+.header {
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  width: 100%;
+}
+
+/* Estilos para el logo */
+.logo {
+  max-width: 80px; /* Ancho máximo del logo */
+}
 
 .background{
-  background: url(../public/backgroud.png);
+  background-image: url(../public/backgroud.png);
 }
 
 code {

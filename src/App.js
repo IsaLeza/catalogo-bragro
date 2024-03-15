@@ -48,11 +48,12 @@ function App(props) {
   };
 
   return (
-    <div className='background'>
-      <div className="bg-gray-900 h-screen flex flex-col justify-end items-center md:justify-center scroll-mx-2 overflow-hidden">
-        <div className="text-4xl font-bold md:font-extrabold text-white" style={{ margin: "1.5rem" }}>
-          Catálogo BR Agro
-        </div>
+    <div>
+       <div className="header">
+      {/* Logo centrado */}
+      <img className="logo" src="/logo.png" alt="Logo de la empresa" />
+    </div>
+      <div className="background bg-gray-900 h-screen flex flex-col justify-end items-center md:justify-center scroll-mx-2 overflow-hidden">
         {pdfLoaded && (
           <HTMLFlipBook
             width={350}
@@ -75,6 +76,9 @@ function App(props) {
             ))}
           </HTMLFlipBook>
         )}
+        <div>
+          <p style={{fontWeight:"bold"}}>Derechos reservados <a href='http://www.isasoft.com.mx'>isaSoft</a> 2024.</p>
+        </div>
       </div>
     </div>
   );
