@@ -21,7 +21,8 @@ body {
 }
 
 .background{
-  background-image: url(../public/backgroud.png);
+  background-image: url(../public/bg.jpg);
+  background-size: cover;
 }
 
 code {

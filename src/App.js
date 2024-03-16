@@ -3,6 +3,7 @@ import HTMLFlipBook from "react-pageflip";
 import { Document, Page, pdfjs } from 'react-pdf';
 import 'react-pdf/dist/Page/AnnotationLayer.css';
 import pdf from './cat-br_compressed.pdf';
+import pageturn from './pageturn.mp3'; // Importa el archivo de sonido
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
@@ -20,6 +21,12 @@ function App(props) {
   const [pdfLoaded, setPdfLoaded] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [preloadedPages, setPreloadedPages] = useState(5); // Number of pages to preload
+
+  // Función para reproducir el sonido del flip
+  const playFlipSound = () => {
+    const audio = new Audio(pageturn);
+    audio.play();
+  };
 
   const onDocumentLoadSuccess = ({ numPages }) => {
     setNumPages(numPages);
@@ -60,10 +67,11 @@ function App(props) {
             height={500}
             showCover={true}
             onPageClick={onPageClick}
-            onFlip={() => preloadNextPages()}
+            onFlip={() => { preloadNextPages(); playFlipSound(); }}
             flippingTime={300}
             onChangeOrientation={() => setCurrentPage(1)}
             className="custom-book"
+            imageSmoothingEnabled={true}
           >
             {[...Array(preloadedPages).keys()].map((n) => (
               <div key={n}>
@@ -76,8 +84,10 @@ function App(props) {
             ))}
           </HTMLFlipBook>
         )}
-        <div>
-          <p style={{fontWeight:"bold"}}>Derechos reservados <a href='http://www.isasoft.com.mx'>isaSoft</a> 2024.</p>
+        <div style={{background:"#000", color:"#fff", width:"100%", textAlign:"center"}}>
+          <p style={{fontWeight:"bold"}}>
+            Derechos reservados <a href='http://www.isasoft.com.mx'>isaSoft</a> 2024.
+          </p>
         </div>
       </div>
     </div>
